@@ -1,0 +1,61 @@
+# ═══════════════════════════════════════
+# SECRETOS — NUNCA subir a GitHub
+# ═══════════════════════════════════════
+.env
+.env.local
+.env.production
+config/secrets.py
+**/api_keys.py
+
+# ═══════════════════════════════════════
+# PYTHON
+# ═══════════════════════════════════════
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+ENV/
+.Python
+
+# Distribución / packaging
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ═══════════════════════════════════════
+# DATOS LOCALES (pueden ser grandes)
+# ═══════════════════════════════════════
+data/cache/
+data/historico/*.json
+*.csv
+*.sqlite
+*.db
+
+# ═══════════════════════════════════════
+# LOGS
+# ═══════════════════════════════════════
+*.log
+logs/
+
+# ═══════════════════════════════════════
+# EDITORES
+# ═══════════════════════════════════════
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# ═══════════════════════════════════════
+# SISTEMA OPERATIVO
+# ═══════════════════════════════════════
+.DS_Store
+Thumbs.db
+desktop.ini
