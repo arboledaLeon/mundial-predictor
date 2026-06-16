@@ -151,6 +151,67 @@
 
 ---
 
+## SESIÓN 003 — 16 de junio 2026
+**Estado:** Completada
+**Duración:** ~3 horas (sesión larga y densa)
+**Objetivo de la sesión:** Implementar el modelo ELO (Paso 1.3) con datos verificados, tests automáticos y persistencia entre ejecuciones.
+
+### Commits realizados hoy
+- `feat(elo): implementar modelo ELO con 48 selecciones verificadas del Mundial 2026`
+- `test(elo): agregar tests de probabilidades, sanity de actualización y bono de sede`
+- `feat(almacen): persistir ratings ELO en JSON con escritura segura`
+- `docs(bitacora): documentar sesión 003 - modelo ELO completo`
+
+### ¿Qué hicimos?
+- Escribimos `modelos/elo.py`: modelo ELO completo (probabilidad 1X2, actualización post-partido, bono de sede).
+- **Verificamos en serio los datos** antes de codear (varias rondas):
+  - Confirmamos las 48 selecciones y sus grupos contra el sorteo oficial (5 dic 2025).
+  - Corregimos el orden del top 6 (Argentina #1, no España) y los anfitriones (México #14, USA #17, Canadá #30).
+  - Sacamos a Italia (no clasificó) y a otros 9 equipos que yo había supuesto mal; metimos los 10 reales que faltaban.
+- Decidimos derivar el ELO de la **posición** en el ranking (dato verificable) y no de puntos FIFA inventados.
+- Investigamos la tasa real de empates para calibrar `DRAW_BASE` (ver abajo).
+- Escribimos `tests/test_elo.py`: 7 tests automáticos, todos pasan.
+- Escribimos `modelos/almacen.py`: guarda/carga los ratings en `data/ratings_elo.json` con escritura segura, para que el modelo mejore partido a partido.
+
+### ¿Qué aprendimos?
+
+**Sobre Python:**
+- **Tests automáticos**: una función `test_*` con `assert` verifica una regla del modelo sola. "Se ve bien en la demo" no basta; el test lo comprueba siempre. Hicimos el archivo ejecutable con o sin pytest.
+- **Escritura atómica de archivos**: para no corromper datos, se escribe en un `.tmp` y luego se renombra con `os.replace()` (operación atómica: pasa entera o no pasa). Así el archivo real nunca queda a medias.
+- **Parámetro obligatorio a propósito**: dejar `tipo_partido` SIN valor por defecto obliga a quien registra un partido a declararlo, evitando que algo se trate como "mundial" (K=60) por accidente.
+- **Normalización de texto** con `unicodedata` para comparar nombres sin importar acentos/mayúsculas (así "France", "Francia" y "francia" caen al mismo equipo).
+
+**Sobre el modelo / estadística:**
+- **ELO por posición**: `ELO = 1900 - (posición-1) * (700/47)`. El #1 = 1900, el #48 = 1200. Limitación: lineal-por-posición comprime las diferencias del top (los puntos FIFA reales no son lineales).
+- **Constante 400**: estándar; 400 puntos de diferencia ≈ 91% de probabilidad de ganar.
+- **Modelo de empate y `DRAW_BASE`**: el ELO puro no da empates, así que los estimamos con `P(empate) = DRAW_BASE * (1 - |2E-1|)`. Calibramos `DRAW_BASE` a **0.26** (no 0.30) usando la tasa de empates de la era MODERNA (2014-2022, ~16-20%) en vez de la histórica completa (1930-2022, 24.7%, inflada por eras defensivas). Clave: `DRAW_BASE` es el empate de partidos PAREJOS (el pico), que va por encima del promedio observado.
+- **Conservación del ELO**: lo que un equipo gana, el otro lo pierde (verificado en un test).
+
+**Sobre Git:**
+- `data/ratings_elo.json` SÍ se versiona (decisión del usuario): el historial de commits mostrará cómo cambian los ratings durante el Mundial. Distinto de `data/cache/`, que sigue ignorado.
+
+**Sobre apuestas:**
+- La **cuota justa** = 1 / probabilidad (sin margen de la casa). Si la casa ofrece MÁS que la cuota justa, puede haber valor. El modelo ya la calcula para los 3 resultados.
+
+### Errores encontrados y cómo se resolvieron
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| Tabla de equipos con Italia y 9 selecciones equivocadas | Mi conocimiento del campo de 48 estaba desactualizado | El usuario aportó la lista oficial de grupos; regeneramos la tabla completa |
+| Orden del ranking mal (España #1, anfitriones invertidos) | Dato no verificado de mi parte | El usuario verificó con fuentes (11 jun 2026) y corregimos |
+| `DRAW_BASE=0.30` sin fuente | Valor puesto "a ojo" | Investigamos tasas reales de empates; ajustamos a 0.26 con fuentes citadas |
+| Riesgo de probabilidades negativas en partidos muy desiguales | Reparto del empate podría dar negativos si se cambia la fórmula | Añadimos clamp + renormalización (`_normalizar_probabilidades`) y un test que barre los 2.256 emparejamientos |
+
+### ¿Qué falta para la próxima sesión?
+- [ ] Paso 1.4: implementar Dixon-Coles (modelo de goles con Poisson) — el corazón del sistema.
+- [ ] Construir el `fetcher` de RESULTADOS e implementar `clasificar_partido()` (competition.code → tipo, default conservador "amistoso" + aviso).
+- [ ] Conectar el fetcher de resultados con `almacen.registrar_resultado()` para que los ELOs evolucionen con partidos reales.
+
+### Picks analizados hoy
+*Ninguno — todavía falta Dixon-Coles y el detector de value para emitir picks.*
+
+---
+
 ## 📋 Template para nuevas sesiones
 *(Copia esto cada vez que empieces a trabajar)*
 

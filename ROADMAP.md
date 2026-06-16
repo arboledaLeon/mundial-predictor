@@ -153,23 +153,24 @@ Partidos encontrados hoy (Mundial 2026):
 
 *Empezamos por ELO porque es más simple que Dixon-Coles y da buenos resultados rápido*
 
-- [ ] Escribir `modelos/elo.py`
+- [x] Escribir `modelos/elo.py`
   - Cargar ratings iniciales de todas las selecciones (basado en ranking FIFA)
   - Función: calcular probabilidad de victoria dado ELO de ambos equipos
   - Función: actualizar ELO después de cada resultado real
 
-- [ ] Crear base de datos de ratings iniciales para las 48 selecciones del Mundial
-  - Argentina: ~1850 ELO
-  - Francia: ~1840 ELO
-  - Brasil: ~1830 ELO
-  - *(etc. para todas las selecciones)*
+- [x] Crear base de datos de ratings iniciales para las 48 selecciones del Mundial
+  - Derivada de la POSICIÓN en el ranking FIFA (verificada), no de puntos inventados
+  - Campo de 48 + grupos verificados contra el sorteo oficial (5 dic 2025)
+  - Persistencia en `data/ratings_elo.json` vía `modelos/almacen.py`
 
-- [ ] Probar con un partido real
+- [x] Probar con un partido real
   ```bash
-  python modelos/elo.py "España" "Alemania"
-  # Output esperado:
-  # España: 58.3% | Empate: 22.1% | Alemania: 19.6%
+  python modelos/elo.py "Argentina" "Francia"
+  # Argentina: 42.4% | Empate: 23.8% | Francia: 33.8%
   ```
+
+- [x] EXTRA (no estaba en el plan): tests automáticos (`tests/test_elo.py`, 7/7 ✅)
+- [x] EXTRA: persistencia de ratings con escritura segura (`modelos/almacen.py`)
 
 ---
 
@@ -408,7 +409,7 @@ La disciplina es no salirse del sistema aunque se pierdan 3 seguidas.
 ## Progreso actual
 
 ```
-FASE 1: ██░░░░░░░░ 20%  ← Aquí estamos (Pasos 1.1 y 1.2 completados)
+FASE 1: ████░░░░░░ 40%  ← Aquí estamos (Pasos 1.1, 1.2 y 1.3 completados)
 FASE 2: ░░░░░░░░░░ 0%
 FASE 3: ░░░░░░░░░░ 0%
 FASE 4: ░░░░░░░░░░ 0%
