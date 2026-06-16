@@ -79,31 +79,31 @@ Entras a `github.com/TU_USUARIO/mundial-predictor` y ves los tres archivos .md.
 ### 🔧 Paso 1.1 — Preparar el entorno
 *Lo que aprenderás: cómo funciona Python, entornos virtuales, pip*
 
-- [ ] Instalar Python 3.11+ en tu computador
+- [x] Instalar Python 3.11+ en tu computador
   ```bash
   # Verificar si ya lo tienes:
   python --version
   ```
-- [ ] Crear carpeta del proyecto
+- [x] Crear carpeta del proyecto
   ```bash
   mkdir mundial-predictor
   cd mundial-predictor
   ```
-- [ ] Crear entorno virtual (caja aislada para el proyecto)
+- [x] Crear entorno virtual (caja aislada para el proyecto)
   ```bash
   python -m venv venv
   source venv/bin/activate  # Mac/Linux
   venv\Scripts\activate     # Windows
   ```
-- [ ] Instalar dependencias base
+- [x] Instalar dependencias base
   ```bash
   pip install requests scipy numpy pandas python-dotenv colorama
   ```
-- [ ] Instalar Claude Code
+- [x] Instalar Claude Code
   ```bash
   npm install -g @anthropic-ai/claude-code
   ```
-- [ ] Crear archivo `.env` con tus API keys
+- [x] Crear archivo `.env` con tus API keys
   ```
   FOOTBALL_DATA_KEY=tu_key_aqui
   ODDS_API_KEY=tu_key_aqui
@@ -120,20 +120,20 @@ claude --version  # Debe mostrar versión de Claude Code
 ### 🌐 Paso 1.2 — Conectar a las APIs
 *Lo que aprenderás: qué es una API, cómo hacer requests HTTP, JSON*
 
-- [ ] Crear cuenta en football-data.org (gratis)
+- [x] Crear cuenta en football-data.org (gratis)
   - URL: https://www.football-data.org/client/register
   - Copiar el API key al archivo `.env`
 
-- [ ] Crear cuenta en The Odds API (gratis, 500 requests/mes)
+- [x] Crear cuenta en The Odds API (gratis, 500 requests/mes)
   - URL: https://the-odds-api.com/
   - Copiar el API key al archivo `.env`
 
-- [ ] Escribir `data/fetcher.py` — el módulo que descarga datos
-  - Función: obtener partidos del día
-  - Función: obtener cuotas de un partido
-  - Función: obtener resultados históricos
+- [x] Escribir `data/fetcher.py` — el módulo que descarga datos
+  - Función: obtener partidos del día ✅
+  - Función: obtener cuotas de un partido *(pendiente — Paso 1.5)*
+  - Función: obtener resultados históricos *(pendiente — Paso 1.4)*
 
-- [ ] Probar que los datos llegan correctamente
+- [x] Probar que los datos llegan correctamente
   ```bash
   python data/fetcher.py
   # Debe mostrar los partidos del Mundial de hoy
@@ -408,7 +408,7 @@ La disciplina es no salirse del sistema aunque se pierdan 3 seguidas.
 ## Progreso actual
 
 ```
-FASE 1: ░░░░░░░░░░ 0%   ← Aquí estamos
+FASE 1: ██░░░░░░░░ 20%  ← Aquí estamos (Pasos 1.1 y 1.2 completados)
 FASE 2: ░░░░░░░░░░ 0%
 FASE 3: ░░░░░░░░░░ 0%
 FASE 4: ░░░░░░░░░░ 0%

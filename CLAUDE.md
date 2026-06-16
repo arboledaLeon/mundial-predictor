@@ -123,6 +123,39 @@ margen_minimo = 0.03  # 3% de edge mínimo para considerar una apuesta
 
 ---
 
+## Protocolo obligatorio de cierre de sesión
+
+**Esto no es opcional. Al final de CADA sesión de trabajo, sin que el usuario
+tenga que pedirlo, Claude Code debe ejecutar estos 3 procesos en orden:**
+
+### 1. Documentar en BITACORA.md
+Agregar una nueva entrada de sesión usando el template que ya existe al final
+del archivo. Debe incluir:
+- Qué se construyó (en lenguaje simple, el usuario es principiante)
+- Qué conceptos nuevos se tocaron (Python, Git, estadística, apuestas)
+- Errores que aparecieron y cómo se resolvieron — esto es lo más valioso,
+  nunca omitir un error solo porque ya se arregló
+- Checklist de qué falta para la próxima sesión
+
+### 2. Actualizar ROADMAP.md
+Marcar con ✅ los checkboxes de las tareas completadas en esta sesión.
+Actualizar la barra de progreso de la fase correspondiente.
+
+### 3. Git add, commit y push
+Seguir el formato de commits ya definido en este archivo (sección Workflow con Git).
+Nunca dejar trabajo funcional sin commitear al cerrar sesión.
+Hacer push siempre, no dejar commits solo locales.
+
+**Regla de oro:** si el usuario dice "vamos a cerrar" o "eso es todo por hoy"
+o similar, estos 3 pasos se ejecutan automáticamente sin que tenga que pedir
+cada uno por separado. Mostrar al usuario un resumen breve de qué se documentó
+y qué se commiteó al final.
+
+**Excepción:** si el usuario dice explícitamente "no hagas commit todavía" o
+"espera para documentar", respetar eso y solo ejecutarlo cuando lo confirme.
+
+---
+
 ## Workflow con Git — Reglas obligatorias
 
 ### Filosofía

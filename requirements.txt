@@ -1,0 +1,10 @@
+# Dependencias del proyecto Mundial Predictor
+# Instalar con: pip install -r requirements.txt
+#
+# Para qué sirve cada una:
+requests        # Hacer llamadas HTTP a las APIs (football-data.org, The Odds API)
+scipy           # Matemáticas avanzadas (optimización de Dixon-Coles, Poisson)
+numpy           # Cálculo numérico rápido (arrays, matrices de marcadores)
+pandas          # Manejo de tablas de datos (partidos, resultados históricos)
+python-dotenv   # Leer las API keys del archivo .env sin hardcodearlas
+colorama        # Colores en la terminal (verde = value, rojo = no apostar)

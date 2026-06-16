@@ -92,11 +92,62 @@
 
 ---
 
-## SESIÓN 002 — (próxima sesión)
-**Estado:** Pendiente
-**Objetivo:** Instalar entorno y hacer primer llamado a API
+## SESIÓN 002 — 16 de junio 2026
+**Estado:** Completada
+**Duración:** ~1.5 horas
+**Objetivo de la sesión:** Instalar entorno virtual, crear config/settings.py y data/fetcher.py, y hacer el primer llamado real a la API de football-data.org.
 
-*(Aquí documentarás lo que pase en la próxima sesión)*
+### Commits realizados hoy
+- `chore(deps): crear entorno virtual e instalar dependencias base` — venv + 6 librerías
+- `feat(config): agregar settings.py que carga API keys desde .env` — configuración global
+- `feat(fetcher): conectar football-data.org y obtener partidos del Mundial 2026` — primer dato real
+- `docs(bitacora): documentar sesión 002 - entorno y primera conexión a API`
+
+### ¿Qué hicimos?
+- Creamos el entorno virtual (`venv`) — la "caja aislada" donde viven las librerías del proyecto
+- Instalamos las 6 librerías base: `requests`, `scipy`, `numpy`, `pandas`, `python-dotenv`, `colorama`
+- Creamos `requirements.txt` para que cualquiera pueda reinstalar todo con un comando
+- Creamos todas las carpetas del proyecto: `config/`, `data/cache/`, `data/historico/`, `modelos/`, `analisis/`, `tests/`
+- Escribimos `config/settings.py`: carga las API keys del `.env`, define rutas del proyecto, incluye función `verificar_configuracion()` y parámetros del sistema (EDGE_MINIMO, KELLY_FRACCION, etc.)
+- Escribimos `data/fetcher.py`: se conecta a football-data.org, descarga partidos del Mundial 2026, convierte horas de UTC a hora colombiana (COT = UTC-5), ordena por hora y guarda caché en disco
+- Hicimos la primera prueba real con datos del Mundial 2026 del día de hoy (2026-06-16):
+  ```
+  14:00 COT → France vs Senegal   [IN_PLAY]
+  17:00 COT → Iraq vs Norway      [TIMED]
+  20:00 COT → Iran vs New Zealand [FINISHED]
+  ```
+- Verificamos que `.env`, `venv/` y `data/cache/` están correctamente ignorados por Git
+
+### ¿Qué aprendimos?
+
+**Sobre Python:**
+- **Entorno virtual**: `python -m venv venv` crea una carpeta donde se instalan librerías solo para este proyecto, sin tocar el Python del sistema. Así dos proyectos distintos pueden tener versiones distintas de la misma librería sin conflictos.
+- **`sys.path`**: Python busca módulos solo en ciertas carpetas. Cuando un script está en `data/` no ve los módulos de `config/`. Se soluciona agregando la raíz al path: `sys.path.insert(0, str(BASE_DIR))`.
+- **`python-dotenv`**: la librería `load_dotenv()` lee el archivo `.env` y mete sus variables en la memoria del programa. Después `os.getenv("NOMBRE")` las lee. El archivo `.env` nunca se sube a Git.
+- **Caché con JSON**: guardar la respuesta de la API en un archivo `.json` local permite que la segunda ejecución sea instantánea y no gaste cuota. Si el archivo existe → leerlo; si no → llamar a la API y guardarlo.
+- **`raise_for_status()`**: con `requests`, una respuesta HTTP 403 o 429 no lanza error automáticamente — hay que llamar este método para que se convierta en una excepción capturablee con `try/except`.
+
+**Sobre Git:**
+- `git check-ignore ARCHIVO` muestra si un archivo está siendo ignorado por `.gitignore`. Muy útil para verificar que los secretos y la caché nunca se suban accidentalmente.
+
+**Sobre Python en Windows:**
+- La terminal de Windows usa codificación `cp1252` por defecto y no puede mostrar emojis ni algunos caracteres (✅, ⚽). Se soluciona con `sys.stdout.reconfigure(encoding="utf-8")` al inicio del programa.
+
+### Errores encontrados y cómo se resolvieron
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| `UnicodeEncodeError: 'charmap' codec can't encode character '✅'` | La consola de Windows usa `cp1252` que no soporta emojis | Se agregó `sys.stdout.reconfigure(encoding="utf-8")` en `settings.py`, que todos los módulos importan |
+| El `.env` no existía en la ruta esperada | Yo intenté crearlo en `config/.env` pero el usuario ya lo tenía en la raíz (`files/.env`) | Se ajustó `settings.py` para apuntar a `BASE_DIR / ".env"` en vez de `CONFIG_DIR / ".env"` |
+| Partidos aparecían desordenados en consola (20:00, 14:00, 17:00) | La API no garantiza orden cronológico | Se agregó `sorted(partidos, key=lambda p: p["hora_cot"])` en `mostrar_partidos()` |
+
+### ¿Qué falta para la próxima sesión?
+- [ ] Paso 1.3: implementar `modelos/elo.py` con los ratings iniciales de las 48 selecciones y la fórmula de actualización
+- [ ] Paso 1.3: probar predicción ELO para un partido: España vs Alemania → ¿quién tiene más probabilidad?
+- [ ] Complementar `fetcher.py` con la función de cuotas (The Odds API) — quedó pendiente del Paso 1.2
+
+### Picks analizados hoy
+*Ninguno — el sistema aún no tiene modelo de predicción implementado*
 
 ---
 
